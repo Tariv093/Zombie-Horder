@@ -49,6 +49,22 @@ public class @GameInputActions : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=2)""
+                },
+                {
+                    ""name"": ""Look"",
+                    ""type"": ""Value"",
+                    ""id"": ""f022c700-db67-4422-97b7-61235adf4d65"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": ""NormalizeVector2"",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Reload"",
+                    ""type"": ""Button"",
+                    ""id"": ""06612edb-307b-475f-bb95-4c4dd7366cb7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": ""NormalizeVector2"",
+                    ""interactions"": ""Press""
                 }
             ],
             ""bindings"": [
@@ -121,7 +137,7 @@ public class @GameInputActions : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""b9d17386-aed8-4879-b23c-05758fe316bc"",
-                    ""path"": """",
+                    ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -137,6 +153,28 @@ public class @GameInputActions : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
                     ""action"": ""Run"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1c4aceb4-2709-485e-a89d-b91314eaa205"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""69cd49b6-1eb3-41ca-9477-de1d9dffebb2"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reload"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -168,6 +206,8 @@ public class @GameInputActions : IInputActionCollection, IDisposable
         m_ThirdPerson_Jump = m_ThirdPerson.FindAction("Jump", throwIfNotFound: true);
         m_ThirdPerson_Fire = m_ThirdPerson.FindAction("Fire", throwIfNotFound: true);
         m_ThirdPerson_Run = m_ThirdPerson.FindAction("Run", throwIfNotFound: true);
+        m_ThirdPerson_Look = m_ThirdPerson.FindAction("Look", throwIfNotFound: true);
+        m_ThirdPerson_Reload = m_ThirdPerson.FindAction("Reload", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -221,6 +261,8 @@ public class @GameInputActions : IInputActionCollection, IDisposable
     private readonly InputAction m_ThirdPerson_Jump;
     private readonly InputAction m_ThirdPerson_Fire;
     private readonly InputAction m_ThirdPerson_Run;
+    private readonly InputAction m_ThirdPerson_Look;
+    private readonly InputAction m_ThirdPerson_Reload;
     public struct ThirdPersonActions
     {
         private @GameInputActions m_Wrapper;
@@ -229,6 +271,8 @@ public class @GameInputActions : IInputActionCollection, IDisposable
         public InputAction @Jump => m_Wrapper.m_ThirdPerson_Jump;
         public InputAction @Fire => m_Wrapper.m_ThirdPerson_Fire;
         public InputAction @Run => m_Wrapper.m_ThirdPerson_Run;
+        public InputAction @Look => m_Wrapper.m_ThirdPerson_Look;
+        public InputAction @Reload => m_Wrapper.m_ThirdPerson_Reload;
         public InputActionMap Get() { return m_Wrapper.m_ThirdPerson; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -250,6 +294,12 @@ public class @GameInputActions : IInputActionCollection, IDisposable
                 @Run.started -= m_Wrapper.m_ThirdPersonActionsCallbackInterface.OnRun;
                 @Run.performed -= m_Wrapper.m_ThirdPersonActionsCallbackInterface.OnRun;
                 @Run.canceled -= m_Wrapper.m_ThirdPersonActionsCallbackInterface.OnRun;
+                @Look.started -= m_Wrapper.m_ThirdPersonActionsCallbackInterface.OnLook;
+                @Look.performed -= m_Wrapper.m_ThirdPersonActionsCallbackInterface.OnLook;
+                @Look.canceled -= m_Wrapper.m_ThirdPersonActionsCallbackInterface.OnLook;
+                @Reload.started -= m_Wrapper.m_ThirdPersonActionsCallbackInterface.OnReload;
+                @Reload.performed -= m_Wrapper.m_ThirdPersonActionsCallbackInterface.OnReload;
+                @Reload.canceled -= m_Wrapper.m_ThirdPersonActionsCallbackInterface.OnReload;
             }
             m_Wrapper.m_ThirdPersonActionsCallbackInterface = instance;
             if (instance != null)
@@ -266,6 +316,12 @@ public class @GameInputActions : IInputActionCollection, IDisposable
                 @Run.started += instance.OnRun;
                 @Run.performed += instance.OnRun;
                 @Run.canceled += instance.OnRun;
+                @Look.started += instance.OnLook;
+                @Look.performed += instance.OnLook;
+                @Look.canceled += instance.OnLook;
+                @Reload.started += instance.OnReload;
+                @Reload.performed += instance.OnReload;
+                @Reload.canceled += instance.OnReload;
             }
         }
     }
@@ -285,5 +341,7 @@ public class @GameInputActions : IInputActionCollection, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
         void OnRun(InputAction.CallbackContext context);
+        void OnLook(InputAction.CallbackContext context);
+        void OnReload(InputAction.CallbackContext context);
     }
 }
